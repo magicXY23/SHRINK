@@ -39,6 +39,7 @@
     function draw() {
         ctx.fillStyle = "#2E2E2E";
         ctx.fillRect(0, 0, c.width, c.height);
+
         ctx.strokeStyle = "White";
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -51,8 +52,15 @@
             ctx.lineTo(c.width, j*(size + 1));
         }
         ctx.stroke();
-        ctx.fillStyle = "DodgerBlue";
-        ctx.fillRect(block.x, block.y, size, size);
+
+        for (let i = 0; i < rows; i++) {
+            for (let j = 0; j < cols; j++) {
+                if (grid[i][j]) {
+                    ctx.fillStyle = "DodgerBlue";
+                    ctx.fillRect(j*(size + 1), i*(size + 1), size, size);
+                }
+            }
+        }
     }
     
     onresize = () => {
@@ -61,10 +69,20 @@
         }
         lastOuterWidth = outerWidth;
         lastOuterHeight = outerHeight;
+
         cols = Math.floor((innerWidth - 2)/(size + 1));
         rows = Math.floor((innerHeight - title.offsetHeight - 2)/(size + 1));
+
         c.width = cols*size + cols - 1;
         c.height = rows*size + rows - 1;
+
+        for (let i = 0; i < rows; i++) {
+            grid[i] = [];
+            for (let j = 0; j < cols; j++) {
+                grid[i][j] = false;
+            }
+        }
+
         draw();
     };
     onresize();
