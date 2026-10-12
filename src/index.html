@@ -99,5 +99,19 @@
         }
     };
 
+    function countNeighbors(row, col) {
+        let count = 0;
+        for (let i = row - 1; i <= row + 1; i++) {
+            for (let j = col - 1; j <= col + 1; j++) {
+                if (i === row && j === col) continue;
+                if (i >= 0 && i < rows && j >= 0 && j < cols) {
+                    if (grid[i][j]) count++;
+                }
+            }
+        }
+        return count;
+    }
+    function updateGrid() {
+    }
     </script>
 </body>
