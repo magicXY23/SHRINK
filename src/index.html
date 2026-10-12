@@ -112,6 +112,19 @@
         return count;
     }
     function updateGrid() {
+        let newGrid = [];
+        for (let i = 0; i < rows; i++) {
+            newGrid[i] = [];
+            for (let j = 0; j < cols; j++) {
+                const neighbors = countNeighbors(i, j);
+                if (grid[i][j]) {
+                    newGrid[i][j] = neighbors === 2 || neighbors === 3;
+                } else {
+                    newGrid[i][j] = neighbors === 3;
+                }
+            }
+        }
+        grid = newGrid;
     }
     </script>
 </body>
