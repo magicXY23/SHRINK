@@ -1,11 +1,73 @@
 <body>
-  <h1>it works!</h1>
-  <style>
-    body { background: black; color: white; font-family: sans-serif; }
-  </style>
-  <script>
+    <h1>Conway's Game of Life</h1>
+    <canvas id="c"></canvas>
+
+    <style>
+    body {
+        background: CornflowerBlue;
+        color: MidnightBlue;
+        font-family: sans-serif;
+        margin: 0px;
+    }
+    h1 {
+        text-align: center;
+        margin: 0px;
+    }
+    #c {
+        display: block;
+        border: 1px solid White;
+        margin: auto;
+    }
+    </style>
+
+    <script>
     const title = document.querySelector("h1");
-    title.onclick = () => (title.textContent = "you clicked it");
-  </script>
-  
+    let isClicked = false;
+    title.onclick = () => {
+        isClicked = !isClicked;
+        title.textContent = isClicked ? "LOL you clicked it" : "Conway's Game of Life";
+    };
+
+    const c = document.getElementById('c')
+    const ctx = c.getContext("2d");
+
+    const size = 10;
+    let cols, rows, grid = [];
+    let lastOuterWidth, lastOuterHeight;
+    let block = {x: 0, y: 0};
+
+    function draw() {
+        ctx.fillStyle = "#2E2E2E";
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.strokeStyle = "White";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let i = 0; i < cols; i++) {
+            ctx.moveTo(i*(size + 1), 0);
+            ctx.lineTo(i*(size + 1), c.height);
+        }
+        for (let j = 0; j < rows; j++) {
+            ctx.moveTo(0, j*(size + 1));
+            ctx.lineTo(c.width, j*(size + 1));
+        }
+        ctx.stroke();
+        ctx.fillStyle = "DodgerBlue";
+        ctx.fillRect(block.x, block.y, size, size);
+    }
+    
+    onresize = () => {
+        if (lastOuterWidth === outerWidth && lastOuterHeight === outerHeight) {
+            return;
+        }
+        lastOuterWidth = outerWidth;
+        lastOuterHeight = outerHeight;
+        cols = Math.floor((innerWidth - 2)/(size + 1));
+        rows = Math.floor((innerHeight - title.offsetHeight - 2)/(size + 1));
+        c.width = cols*size + cols - 1;
+        c.height = rows*size + rows - 1;
+        draw();
+    };
+    onresize();
+
+    </script>
 </body>
