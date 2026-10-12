@@ -32,7 +32,7 @@
     const ctx = c.getContext("2d");
 
     const size = 10;
-    let cols, rows, grid = [];
+    let rows, cols, grid = [];
     let lastOuterWidth, lastOuterHeight;
     let block = {x: 0, y: 0};
 
@@ -43,13 +43,13 @@
         ctx.strokeStyle = "White";
         ctx.lineWidth = 1;
         ctx.beginPath();
-        for (let i = 0; i < cols; i++) {
-            ctx.moveTo(i*(size + 1), 0);
-            ctx.lineTo(i*(size + 1), c.height);
+        for (let j = 1; j < rows; j++) {
+            ctx.moveTo(0, j*(size + 1) - 1 + 0.5);
+            ctx.lineTo(c.width, j*(size + 1) - 1 + 0.5);
         }
-        for (let j = 0; j < rows; j++) {
-            ctx.moveTo(0, j*(size + 1));
-            ctx.lineTo(c.width, j*(size + 1));
+        for (let i = 1; i < cols; i++) {
+            ctx.moveTo(i*(size + 1) - 1 + 0.5, 0);
+            ctx.lineTo(i*(size + 1) - 1 + 0.5, c.height);
         }
         ctx.stroke();
 
@@ -70,8 +70,8 @@
         lastOuterWidth = outerWidth;
         lastOuterHeight = outerHeight;
 
-        cols = Math.floor((innerWidth - 2)/(size + 1));
-        rows = Math.floor((innerHeight - title.offsetHeight - 2)/(size + 1));
+        rows = Math.floor((innerHeight - title.offsetHeight - 2 + 1)/(size + 1));
+        cols = Math.floor((innerWidth - 2 + 1)/(size + 1));
 
         c.width = cols*size + cols - 1;
         c.height = rows*size + rows - 1;
@@ -86,6 +86,18 @@
         draw();
     };
     onresize();
+
+    c.onclick = (event) => {
+        const canvas = c.getBoundingClientRect();
+        const mouseX = event.clientX - canvas.left;
+        const mouseY = event.clientY - canvas.top;
+        const mouseRow = Math.floor(mouseY / (size + 1));
+        const mouseCol = Math.floor(mouseX / (size + 1));
+        if (mouseRow >= 0 && mouseRow < rows && mouseCol >= 0 && mouseCol < cols) {
+            grid[mouseRow][mouseCol] = !grid[mouseRow][mouseCol];
+            draw();
+        }
+    };
 
     </script>
 </body>
