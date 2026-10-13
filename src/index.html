@@ -4,6 +4,8 @@
         <input type="range" id="slider" min="1" max="500" value="100">
         <b><p>Speed: 1 tick per <span id="speed"></span>ms</p></b>
         <button id="sound">🔊 Sound is on</button>
+        <button id="toggle">Start</button>
+        <button id="clear"">Clear</button>
     </div>
     <canvas id="c"></canvas>
 
@@ -33,6 +35,7 @@
     </style>
 
     <script>
+    const controls = document.querySelector(".controls");
     const title = document.querySelector("h1");
     let isClicked = false;
     title.onclick = () => {
@@ -40,26 +43,16 @@
         title.textContent = isClicked ? "LOL you clicked it" : "Conway's Game of Life";
     };
 
-    const slider = document.getElementById("slider");
-    const speed = document.getElementById("speed");
-    speed.textContent = slider.value;
-    slider.oninput = () => {
-        speed.textContent = slider.value;
-        if (isRunning) {
-            clearInterval(interval);
-            interval = setInterval(() => {
-                updateGrid();
-                draw();
-                beep();
-            }, slider.value);
-        }
-    };
-
     const sound = document.getElementById("sound");
     let isSoundOn = true;
     sound.onclick = () => {
         isSoundOn = !isSoundOn;
         sound.textContent = isSoundOn ? "🔊 Sound is on" : "🔇 Sound is off";
+    };
+
+    const clear = document.getElementById("clear");
+    clear.onclick = () => {
+        onresize();
     };
 
     const c = document.getElementById('c');
@@ -106,7 +99,7 @@
         lastOuterWidth = outerWidth;
         lastOuterHeight = outerHeight;
 
-        rows = Math.floor((innerHeight - title.offsetHeight - 2 + 1)/(size + 1));
+        rows = Math.floor((innerHeight - title.offsetHeight - controls.offsetHeight - 2 + 1)/(size + 1));
         cols = Math.floor((innerWidth - 2 + 1)/(size + 1));
 
         c.width = cols*size + cols - 1;
@@ -215,6 +208,25 @@
         lastCell = null;
     };
 
+    function gameLoop() {
+        updateGrid();
+        draw();
+        beep();
+    }
+
+    const slider = document.getElementById("slider");
+    const speed = document.getElementById("speed");
+    speed.textContent = slider.value;
+    slider.oninput = () => {
+        speed.textContent = slider.value;
+        if (isRunning) {
+            clearInterval(interval);
+            interval = setInterval(() => {
+                gameLoop();
+            }, slider.value);
+        }
+    };
+
     onkeydown = (event) => {
         if (event.key === " ") {
             event.preventDefault();
@@ -222,9 +234,7 @@
             isRunning = !isRunning;
             if (isRunning) {
                 interval = setInterval(() => {
-                    updateGrid();
-                    draw();
-                    beep();
+                    gameLoop();
                 }, slider.value);
             }
             else {
@@ -235,5 +245,18 @@
         }
     };
 
+    const toggle = document.getElementById("toggle");
+    toggle.onclick = () => {
+        isRunning = !isRunning;
+        toggle.textContent = isRunning ? "Stop" : "Start";
+        if (isRunning) {
+            interval = setInterval(() => {
+                gameLoop();
+            }, slider.value);
+        }
+        else {
+            clearInterval(interval);
+        }
+    };
     </script>
 </body>
