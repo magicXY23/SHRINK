@@ -35,8 +35,8 @@
     const size = 10;
     let rows, cols, grid = [];
     let lastOuterWidth, lastOuterHeight;
-    let block = {x: 0, y: 0};
     let isRunning = false, interval = null;
+    let isMouseDown = false, lastCell = null, isDeadAlive = true;
 
     function draw() {
         ctx.fillStyle = "#2E2E2E";
@@ -63,7 +63,7 @@
                 }
             }
         }
-    };
+    }
 
     onresize = () => {
         if (lastOuterWidth === outerWidth && lastOuterHeight === outerHeight) {
@@ -100,7 +100,7 @@
             }
         }
         return count;
-    };
+    }
 
     function updateGrid() {
         let newGrid = [];
@@ -117,34 +117,67 @@
             }
         }
         grid = newGrid;
-    };
+    }
 
     function beep() {
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
+
         const osc = audioCtx.createOscillator();
         osc.type = 'sine';
         osc.frequency.value = 333;
+
         const gain = audioCtx.createGain();
         gain.gain.setValueAtTime(0.5, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.05);
+
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.05);
     }
     
-    c.onclick = (event) => {
+    function getCell(event) {
         const canvas = c.getBoundingClientRect();
+
         const mouseX = event.clientX - canvas.left;
         const mouseY = event.clientY - canvas.top;
+
         const mouseRow = Math.floor(mouseY / (size + 1));
         const mouseCol = Math.floor(mouseX / (size + 1));
+
         if (mouseRow >= 0 && mouseRow < rows && mouseCol >= 0 && mouseCol < cols) {
-            grid[mouseRow][mouseCol] = !grid[mouseRow][mouseCol];
+            return {row: mouseRow, col: mouseCol};
+        }
+        return null;
+    }
+
+    c.onmousedown = (event) => {
+        isMouseDown = true;
+        const cell = getCell(event);
+        if (cell) {
+            isDeadAlive = !grid[cell.row][cell.col];
+            grid[cell.row][cell.col] = isDeadAlive;
+            lastCell = cell;
             draw();
         }
+    };
+
+    onmousemove = (event) => {
+        if (!isMouseDown) return;
+
+        const cell = getCell(event);
+        if (cell && cell !== lastCell) {
+            grid[cell.row][cell.col] = isDeadAlive;
+            lastCell = cell;
+            draw();
+        }
+    };
+
+    onmouseup = () => {
+        isMouseDown = false;
+        lastCell = null;
     };
 
     onkeydown = (event) => {
