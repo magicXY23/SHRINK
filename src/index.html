@@ -50,11 +50,6 @@
         sound.textContent = isSoundOn ? "🔊 Sound is on" : "🔇 Sound is off";
     };
 
-    const clear = document.getElementById("clear");
-    clear.onclick = () => {
-        onresize();
-    };
-
     const c = document.getElementById('c');
     const ctx = c.getContext("2d");
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -91,6 +86,17 @@
             }
         }
     }
+
+    const clear = document.getElementById("clear");
+    clear.onclick = () => {
+        for (let i = 0; i < rows; i++) {
+            grid[i] = [];
+            for (let j = 0; j < cols; j++) {
+                grid[i][j] = false;
+            }
+        }
+        draw();
+    };
 
     onresize = () => {
         if (lastOuterWidth === outerWidth && lastOuterHeight === outerHeight) {
