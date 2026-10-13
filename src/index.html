@@ -209,9 +209,18 @@
     };
 
     function gameLoop() {
-        updateGrid();
-        draw();
-        beep();
+        isRunning = !isRunning;
+        toggle.textContent = isRunning ? "Stop" : "Start";
+        if (isRunning) {
+            interval = setInterval(() => {
+                updateGrid();
+                draw();
+                beep();
+            }, slider.value);
+        }
+        else {
+            clearInterval(interval);
+        }
     }
 
     const slider = document.getElementById("slider");
@@ -222,7 +231,9 @@
         if (isRunning) {
             clearInterval(interval);
             interval = setInterval(() => {
-                gameLoop();
+                updateGrid();
+                draw();
+                beep();
             }, slider.value);
         }
     };
@@ -231,32 +242,13 @@
         if (event.key === " ") {
             event.preventDefault();
             if (event.repeat) return;
-            isRunning = !isRunning;
-            if (isRunning) {
-                interval = setInterval(() => {
-                    gameLoop();
-                }, slider.value);
-            }
-            else {
-                clearInterval(interval);
-            }
-            updateGrid();
-            draw();
+            gameLoop();
         }
     };
 
     const toggle = document.getElementById("toggle");
     toggle.onclick = () => {
-        isRunning = !isRunning;
-        toggle.textContent = isRunning ? "Stop" : "Start";
-        if (isRunning) {
-            interval = setInterval(() => {
-                gameLoop();
-            }, slider.value);
-        }
-        else {
-            clearInterval(interval);
-        }
+        gameLoop();
     };
     </script>
 </body>
