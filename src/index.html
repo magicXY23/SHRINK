@@ -1,5 +1,10 @@
 <body>
     <h1>Conway's Game of Life</h1>
+    <div class="controls">
+        <input type="range" id="slider" min="1" max="500" value="100">
+        <b><p>Speed: 1 tick per <span id="speed"></span>ms</p></b>
+        <button id="sound">🔊 Sound is on</button>
+    </div>
     <canvas id="c"></canvas>
 
     <style>
@@ -12,6 +17,13 @@
     h1 {
         text-align: center;
         margin: 0px;
+    }
+    .controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin: 0;
     }
     #c {
         display: block;
@@ -26,6 +38,28 @@
     title.onclick = () => {
         isClicked = !isClicked;
         title.textContent = isClicked ? "LOL you clicked it" : "Conway's Game of Life";
+    };
+
+    const slider = document.getElementById("slider");
+    const speed = document.getElementById("speed");
+    speed.textContent = slider.value;
+    slider.oninput = () => {
+        speed.textContent = slider.value;
+        if (isRunning) {
+            clearInterval(interval);
+            interval = setInterval(() => {
+                updateGrid();
+                draw();
+                beep();
+            }, slider.value);
+        }
+    };
+
+    const sound = document.getElementById("sound");
+    let isSoundOn = true;
+    sound.onclick = () => {
+        isSoundOn = !isSoundOn;
+        sound.textContent = isSoundOn ? "🔊 Sound is on" : "🔇 Sound is off";
     };
 
     const c = document.getElementById('c');
@@ -120,6 +154,7 @@
     }
 
     function beep() {
+        if (!isSoundOn) return;
         if (audioCtx.state === 'suspended') {
             audioCtx.resume();
         }
@@ -183,13 +218,14 @@
     onkeydown = (event) => {
         if (event.key === " ") {
             event.preventDefault();
+            if (event.repeat) return;
             isRunning = !isRunning;
             if (isRunning) {
                 interval = setInterval(() => {
                     updateGrid();
                     draw();
                     beep();
-                }, 100);
+                }, slider.value);
             }
             else {
                 clearInterval(interval);
