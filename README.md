@@ -1,0 +1,8 @@
+Simulation rules:
+A given cell's neighbors are the 8 cells surrounding the given cell.
+Any "alive" cells with less than or greater than 2-3 neighbors pass away.
+Any "dead" cells with exactly 3 neighbors come to life.
+
+A simple reproduction of Conway's Game of Life, click on any square to change it between "dead" and "alive", pressing the space bar will start/stop the simulation (which makes a beep sound every tick), holding the space bar will speed up the simulation (which also stops the beep sound). Additionally, the canvas and grid adapts to the screen size, but also allows you to zoom in and out without messing up the current grid, however adjusting the screen size will clear the entire grid unfortunately (I would really like to fix that...). Lastly, cells on the edges of the board may result in unexpected behaviors (particularly with something like a glider), I might fix it later...
+
+This simulation is made via a little bit of text, some CSS, canvas API, Javascript, and web audio API. Making the game dynamically adjust the canvas and grid based on screen size is definitely the most annoying part of the process, and even now it has many flaws that I would like to fix. Overall, my version still has many flaws, which I do intend on investigating and potentially fixing, but hopefully you will still enjoy my simple rendition of the Conway's Game of Life, it is rather crude, but I tried my best <3
