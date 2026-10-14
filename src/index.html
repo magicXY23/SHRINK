@@ -2,10 +2,10 @@
     <h1>Conway's Game of Life</h1>
     <div class="controls">
         <input type="range" id="slider" min="1" max="500" value="100">
-        <b><p>Speed: 1 tick per <span id="speed"></span>ms</p></b>
+        <p><b>Speed: 1 tick per <span id="speed"></span>ms</b></p>
         <button id="sound">🔊 Sound is on</button>
         <button id="toggle">Start</button>
-        <button id="clear"">Clear</button>
+        <button id="clear">Clear</button>
     </div>
     <canvas id="c"></canvas>
 
@@ -117,12 +117,7 @@
         for (let i = 0; i < rows; i++) {
             grid[i] = [];
             for (let j = 0; j < cols; j++) {
-                if (i < oldGrid.length && j < oldGrid[0].length && oldGrid[i] && oldGrid[i][j]) {
-                    grid[i][j] = oldGrid[i][j];
-                }
-                else {
-                    grid[i][j] = false;
-                }
+                grid[i][j] = !!(oldGrid[i] && oldGrid[i][j]);
             }
         }
 
@@ -195,7 +190,7 @@
         return null;
     }
 
-    c.onmousedown = (event) => {
+    c.onpointerdown = (event) => {
         isMouseDown = true;
         const cell = getCell(event);
         if (cell) {
@@ -206,18 +201,18 @@
         }
     };
 
-    onmousemove = (event) => {
+    onpointermove = (event) => {
         if (!isMouseDown) return;
 
         const cell = getCell(event);
-        if (cell && cell !== lastCell) {
+        if (cell && (cell.row !== lastCell.row || cell.col !== lastCell.col)) {
             grid[cell.row][cell.col] = isDeadAlive;
             lastCell = cell;
             draw();
         }
     };
 
-    onmouseup = () => {
+    onpointerup = () => {
         isMouseDown = false;
         lastCell = null;
     };
