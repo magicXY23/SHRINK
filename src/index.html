@@ -111,10 +111,18 @@
         c.width = cols*size + cols - 1;
         c.height = rows*size + rows - 1;
 
+        const oldGrid = grid;
+        grid = [];
+
         for (let i = 0; i < rows; i++) {
             grid[i] = [];
             for (let j = 0; j < cols; j++) {
-                grid[i][j] = false;
+                if (i < oldGrid.length && j < oldGrid[0].length && oldGrid[i] && oldGrid[i][j]) {
+                    grid[i][j] = oldGrid[i][j];
+                }
+                else {
+                    grid[i][j] = false;
+                }
             }
         }
 
